@@ -1,8 +1,38 @@
-version: '3'
+#version: '3'
+#services:
+#  spark:
+#    image: pyspark-app:latest
+#    container_name: pyspark-container
+#    volumes:
+#      - ./data:/app/data
+#    command: python3 src/main.py
+
+version: "3.8"
+
 services:
-  spark:
-    image: pyspark-app:latest
+  pyspark:
+    image: apache/spark:latest
     container_name: pyspark-container
+    command: >
+      bash -c "pyspark
+      --master local[*]
+      --conf spark.eventLog.enabled=true
+      --conf spark.eventLog.dir=/spark-events"
+    ports:
+      - "4040:4040"   # Spark UI
     volumes:
+      - ./src:/app/src
       - ./data:/app/data
-    command: python3 src/main.py
+      - ./spark-events:/spark-events
+    working_dir: /app
+    stdin_open: true
+    tty: true
+
+  history-server:
+    image: apache/spark:latest
+    container_name: spark-history
+    command: ./bin/spark-class org.apache.spark.deploy.history.HistoryServer
+    ports:
+      - "18080:18080" # History Server UI
+    volumes:
+      - ./spark-events:/spark-events

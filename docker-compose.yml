@@ -12,11 +12,12 @@ services:
   pyspark:
     image: apache/spark:latest
     container_name: pyspark-container
-    command: >
-      bash -c "pyspark
-      --master local[*]
-      --conf spark.eventLog.enabled=true
-      --conf spark.eventLog.dir=/spark-events"
+    #command: >
+    #  bash -c "pyspark
+    #  --master local[*]
+    #  --conf spark.eventLog.enabled=true
+    #  --conf spark.eventLog.dir=/spark-events"
+    command: tail -f /dev/null
     ports:
       - "4040:4040"   # Spark UI
     volumes:

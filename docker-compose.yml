@@ -8,7 +8,6 @@
 #    command: python3 src/main.py
 
 version: "3.8"
-
 services:
   pyspark:
     image: apache/spark:latest

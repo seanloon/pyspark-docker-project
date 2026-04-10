@@ -29,4 +29,7 @@ COPY ./requirements.txt /app/
 RUN pip3 install -r requirements.txt
 
 # Default command
-CMD ["python3", "src/main.py"]
+#CMD ["python3", "src/main.py"]
+
+# Default command: start PySpark shell
+CMD ["pyspark", "--master", "local[*]", "--conf", "spark.eventLog.enabled=true", "--conf", "spark.eventLog.dir=/spark-events"]

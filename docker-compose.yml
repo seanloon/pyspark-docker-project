@@ -2,21 +2,21 @@ version: "3.8"
 
 services:
   pyspark:
-    image: pyspark-app:latest   # your custom image
+    image: pyspark-app:latest
     container_name: pyspark-container
-    command: bash               # gives you interactive shell
+    command: bash
     ports:
-      - "4040:4040"             # Spark UI
+      - "4040:4040"
     volumes:
-      - ./src:/app/src
-      - ./data:/app/data
-      - ./spark-events:/spark-events
+      - ./src:/app/src:rw
+      - ./data:/app/data:rw
+      - ./spark-events:/spark-events:rw
     working_dir: /app
     stdin_open: true
     tty: true
 
   history-server:
-    image: pyspark-app:latest   # must match Spark version
+    image: pyspark-app:latest
     container_name: spark-history
     command: >
       bash -c "mkdir -p /spark-events &&

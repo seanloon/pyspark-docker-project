@@ -1,25 +1,12 @@
-#version: '3'
-#services:
-#  spark:
-#    image: pyspark-app:latest
-#    container_name: pyspark-container
-#    volumes:
-#      - ./data:/app/data
-#    command: python3 src/main.py
-
 version: "3.8"
+
 services:
   pyspark:
-    image: apache/spark:latest
+    image: pyspark-app:latest   # your custom image
     container_name: pyspark-container
-    #command: >
-    #  bash -c "pyspark
-    #  --master local[*]
-    #  --conf spark.eventLog.enabled=true
-    #  --conf spark.eventLog.dir=/spark-events"
-    command: tail -f /dev/null
+    command: bash               # gives you interactive shell
     ports:
-      - "4040:4040"   # Spark UI
+      - "4040:4040"             # Spark UI
     volumes:
       - ./src:/app/src
       - ./data:/app/data
@@ -29,10 +16,14 @@ services:
     tty: true
 
   history-server:
-    image: apache/spark:latest
+    image: pyspark-app:latest   # must match Spark version
     container_name: spark-history
-    command: ./bin/spark-class org.apache.spark.deploy.history.HistoryServer
+    command: >
+      bash -c "mkdir -p /spark-events &&
+               ./bin/spark-class org.apache.spark.deploy.history.HistoryServer"
+    environment:
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/spark-events
     ports:
-      - "18080:18080" # History Server UI
+      - "18080:18080"
     volumes:
       - ./spark-events:/spark-events

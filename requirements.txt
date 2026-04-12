@@ -1,5 +1,6 @@
 # Core Spark
 pyspark==4.1.1
+delta-spark==4.2.0
 
 # Data handling
 pandas==2.2.2
